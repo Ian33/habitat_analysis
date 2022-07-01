@@ -17,8 +17,9 @@ import plotly.io as pio
 import plotly.express as px
 import pyodbc
 
+gdata =  "KCITSQLPRNRPX01"
 conn = pyodbc.connect('Driver={SQL Server};'
-                          'Server=NRDOSQLPrX01;'
+                          'Server='+gdata+';'
                           'Database=gData;'
                           'Trusted_Connection=yes;')
 #import imgkit
@@ -85,6 +86,7 @@ DATA_2020_WHOLEREACH = DATA_2020[DATA_2020.Reach == 'Combined']
 
 def SUBSTRATE_SITES():
     def SUBSTRATE():
+        ''' returns total count of substrate class for site per year'''
         #column_names = ["SILT", "SAND", "FINE_GRAVEL", "COURSE_GRAVEL","COBBLE","SMALL_BOULDER","LARGE_BOULDER","HARDPAN"]
 
         #WATER_YEAR_SUBSTRATE = pd.DataFrame(columns = column_names)
@@ -117,7 +119,15 @@ def SUBSTRATE_SITES():
         return SITE_TOTAL_SUBSTRATE    
     
     
-    
+    from access_database import query_access
+    # get list of watersheds
+    # should probably move this to beginning of program
+    watersheds = query_access("Watershed", "Survey_events")
+    watersheds = watersheds.drop_duplicates()
+
+    for Watershed in watersheds:
+        substrate = query_access("Survey_FK, Substrate_lcenter, Substrate_center, Substrate_rcenter, Substrate_right", "Transects")
+        print(substrate)
     
     SITE = 'CY'
     CY_SUBSTRATE = SUBSTRATE()
