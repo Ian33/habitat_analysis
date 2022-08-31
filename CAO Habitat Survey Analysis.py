@@ -17,8 +17,9 @@ import plotly.io as pio
 import plotly.express as px
 import pyodbc
 
+gdata =  "KCITSQLPRNRPX01"
 conn = pyodbc.connect('Driver={SQL Server};'
-                          'Server=NRDOSQLPrX01;'
+                          'Server='+gdata+';'
                           'Database=gData;'
                           'Trusted_Connection=yes;')
 #import imgkit
@@ -28,6 +29,13 @@ pio.renderers.default = "browser"
 pd.set_option('display.max_columns', None)
 #IMPORT DATA
 ''' OLD DATA '''
+from access_database import all_data
+
+# recreate dataframe from access database
+DATA_2018 = all_data(2018)
+DATA_2019 = all_data(2019)
+DATA_2020 = all_data(2020)
+DATA_2021 = all_data(2021)
 
 #W:\STS\ScienceCAO\2_Stream Complexity\03_Results\Physical Habitat\Physical_Stream_Surveys
 DATA_2009 = pd.read_excel(r'W:\STS\ScienceCAO\2_Stream Complexity\03_Results\Physical Habitat\Physical_Stream_Surveys.xls', sheet_name='Master Summary Table', header=0, nrows=27, usecols = "B,C,D,H,L,P,T,X,AB,AF,AJ,AN,AR,AV,AZ,BD,BH,BL,BP")
@@ -38,53 +46,35 @@ DATA_2012 = pd.read_excel(r'W:\STS\ScienceCAO\2_Stream Complexity\03_Results\Phy
 DATA_2009["SITE"] = ['WRU','WRL','WRC','NSU','NSL','NSC','SSU','SSL','SSC','TRU','TRL','TRC','CYU','CYL','CYC','FRU','FRL','FRC','THU','THL','THC','WSU','WSL','WSC','JDU','JDL','JDC']
 DATA_2009 = DATA_2009.reindex([12,13,14,3,4,5,6,7,8,15,16,17,24,25,26,18,19,20,9,10,11,0,1,2,21,22,23])
 DATA_2009 = DATA_2009.iloc[:, [19,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]]
+# Filter out for just the combind reaches
+DATA_2009 = DATA_2009[DATA_2020.Reach == 'Combined']
 
 DATA_2010["SITE"] = ['WRU','WRL','WRC','NSU','NSL','NSC','SSU','SSL','SSC','TRU','TRL','TRC','CYU','CYL','CYC','FRU','FRL','FRC','THU','THL','THC','WSU','WSL','WSC','JDU','JDL','JDC']
 DATA_2010 = DATA_2010.reindex([12,13,14,3,4,5,6,7,8,15,16,17,24,25,26,18,19,20,9,10,11,0,1,2,21,22,23])
 DATA_2010 = DATA_2010.iloc[:, [19,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]]
+# Filter out for just the combind reaches
+DATA_2010 = DATA_2010[DATA_2010.Reach == 'Combined']
 
 DATA_2011["SITE"] = ['WRU','WRL','WRC','NSU','NSL','NSC','SSU','SSL','SSC','TRU','TRL','TRC','CYU','CYL','CYC','FRU','FRL','FRC','THU','THL','THC','WSU','WSL','WSC','JDU','JDL','JDC']
 DATA_2011 = DATA_2011.reindex([12,13,14,3,4,5,6,7,8,15,16,17,24,25,26,18,19,20,9,10,11,0,1,2,21,22,23])
 DATA_2011 = DATA_2011.iloc[:, [19,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]]
+# Filter out for just the combind reaches
+DATA_2011 = DATA_2011[DATA_2011.Reach == 'Combined']
 
 DATA_2012["SITE"] = ['WRU','WRL','WRC','NSU','NSL','NSC','SSU','SSL','SSC','TRU','TRL','TRC','CYU','CYL','CYC','FRU','FRL','FRC','THU','THL','THC','WSU','WSL','WSC','JDU','JDL','JDC']
 DATA_2012 = DATA_2012.reindex([12,13,14,3,4,5,6,7,8,15,16,17,24,25,26,18,19,20,9,10,11,0,1,2,21,22,23])
 DATA_2012 = DATA_2012.iloc[:, [19,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]]
-
-print("DATA OLD")
-print(DATA_2011.shape)
-print(DATA_2011)
+# Filter out for just the combind reaches
+DATA_2012 = DATA_2012[DATA_2012.Reach == 'Combined']
 
 
 '''ORIGONAL '''
 
-
 ORIGIONAL = pd.read_excel(r'P:\JimBower\FRMP\CAO Origional Habitat Data\Original Habitat Data.xls',sheet_name='Reach averages by site',header=0)
-
-DATA_2018 = pd.read_excel(r'P:\JimBower\FRMP\CAO Habitat Data_2018\CAO Physical Stream Surveys_2018.xlsx',sheet_name='Master Summary Table 2018', header=0, nrows=27)
-DATA_2019 = pd.read_excel(r'P:\JimBower\FRMP\CAO Habitat Data_2019\CAO Physical Stream Surveys_2019.xlsx',sheet_name='Master Summary Table 2019', header=0, nrows=27)
-DATA_2020 = pd.read_excel(r'P:\JimBower\FRMP\CAO Habitat Data_2020\CAO Physical Stream Surveys_2020.xlsx',sheet_name='Master Summary Table 2020', header=0, nrows=27)
-print("DATA NEW")
-print(DATA_2020.shape)
-print(DATA_2020)
-# Filter out for just the combind reaches
-DATA_2009_WHOLEREACH = DATA_2009[DATA_2020.Reach == 'Combined']
-DATA_2010_WHOLEREACH = DATA_2010[DATA_2020.Reach == 'Combined']
-DATA_2011_WHOLEREACH = DATA_2011[DATA_2020.Reach == 'Combined']
-DATA_2012_WHOLEREACH = DATA_2012[DATA_2020.Reach == 'Combined']
-
-
-
-
-DATA_2018_WHOLEREACH = DATA_2018[DATA_2018.Reach == 'Combined']
-DATA_2019_WHOLEREACH = DATA_2019[DATA_2019.Reach == 'Combined']
-DATA_2020_WHOLEREACH = DATA_2020[DATA_2020.Reach == 'Combined']
-
-
-
 
 def SUBSTRATE_SITES():
     def SUBSTRATE():
+        ''' returns total count of substrate class for site per year'''
         #column_names = ["SILT", "SAND", "FINE_GRAVEL", "COURSE_GRAVEL","COBBLE","SMALL_BOULDER","LARGE_BOULDER","HARDPAN"]
 
         #WATER_YEAR_SUBSTRATE = pd.DataFrame(columns = column_names)
@@ -117,7 +107,15 @@ def SUBSTRATE_SITES():
         return SITE_TOTAL_SUBSTRATE    
     
     
-    
+    from access_database import query_access
+    # get list of watersheds
+    # should probably move this to beginning of program
+    watersheds = query_access("Watershed", "Survey_events")
+    watersheds = watersheds.drop_duplicates()
+
+    for Watershed in watersheds:
+        substrate = query_access("Survey_FK, Substrate_lcenter, Substrate_center, Substrate_rcenter, Substrate_right", "Transects")
+        print(substrate)
     
     SITE = 'CY'
     CY_SUBSTRATE = SUBSTRATE()
